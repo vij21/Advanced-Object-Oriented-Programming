@@ -1,0 +1,254 @@
+package eecs2030.lab3;
+
+import princeton.introcs.StdDraw;
+import java.awt.Color;
+
+/**
+ * A class that supports turtle graphics. A turtle moves between two points in a
+ * straight line drawing the line as it moves.
+ * 
+ * <p>
+ * A turtle has-a <code>Point2</code> instance that represents the position of
+ * the turtle, and a <code>Color</code> instance that represents the current pen
+ * color. The turtle maintains ownership of its position at all times.
+ * 
+ * 
+ * @author EECS2030 Fall 2016-17
+ * 
+ */
+public class Turtle {
+        private Point2 position;
+        private double angle;
+        private Color penColor;
+
+        /**
+         * <p>
+         * A turtle has an initial Point2 with value of (0.5,0.5), an angle of 0.0
+         * degrees and a pen color of black.
+         */
+        public Turtle() {
+
+                this(new Point2(0.5, 0.5), 0.0, Color.BLACK);
+        }
+
+        /**
+         * <p>
+         * Create a turtle from another turtle with initial point,angle and pen
+         * color same as the other turtle.
+         * 
+         * @param other
+         *            the turtle of copy
+         *
+         */
+
+        public Turtle(Turtle other) {
+
+                this(other.getPosition(), other.getAngle(), other.penColor);
+        }
+
+        /**
+         * <p>
+         * Create a turtle at location position with an angle of 0.0 degrees and a
+         * pen color of Color.BLACK. The turtle is responsible for its own position.
+         * The starting position must be inside the square with corners (0.0, 0.0)
+         * and (1.0, 1.0), otherwise an IllegalArgumentException will be thrown.
+         * 
+         * @param position
+         *            the starting position of the turtle. throws
+         *            IllegalArgumentException - if the starting position is not in
+         *            the square with corners (0.0, 0.0) and (1.0, 1.0)
+         *
+         */
+        public Turtle(Point2 position) {
+
+                if (position.getX() < 0.0 && position.getX() > 1.0 && position.getY() < 0.0 && position.getY() > 1.0) {
+                        throw new IllegalArgumentException();
+                }
+
+                this.position = position;
+                this.angle = 0.0;
+                this.setPenColor(Color.BLACK);
+
+        }
+
+        /**
+         * <p>
+         * Create a turtle at location position with an angle of 0.0 degrees and a
+         * pen color of Color.BLACK. The turtle is responsible for its own position.
+         *
+         * @param position
+         *            the starting position of the turtle.
+         * @param angle
+         *            the angle in degrees from the x axis that the turtle is facing
+         *            in
+         *
+         */
+        public Turtle(Point2 position, double angle) {
+                if (position.getX() < 0.0 && position.getX() > 1.0 && position.getY() < 0.0 && position.getY() > 1.0) {
+                        throw new IllegalArgumentException();
+                }
+                this.position = position;
+                this.angle = angle;
+                this.setPenColor(Color.BLACK);
+        }
+
+        /**
+         * <p>
+         * Create a turtle with the given starting position, angle, and pen color.
+         * The starting position must be inside the square with corners (0.0, 0.0)
+         * and (1.0, 1.0), otherwise an IllegalArgumentException will be thrown. If
+         * color is null, an IllegalArgumentException is thrown.
+         * 
+         * @param position
+         *            the starting position of the turtle
+         * @param angle
+         *            the angle in degrees from the x axis that the turtle is facing
+         *            in
+         * @param c
+         *            the pen color throws IllegalArgumentException - if the
+         *            starting position is not in the square with corners (0.0, 0.0)
+         *            and (1.0, 1.0) IllegalArgumentException - if the pen color c
+         *            is null
+         */
+
+        public Turtle(Point2 position, double angle, Color c) {
+                if (c == null) {
+                        throw new IllegalArgumentException();
+                }
+                if (position.getX() < 0.0 && position.getX() > 1.0 && position.getY() < 0.0 && position.getY() > 1.0) {
+                        throw new IllegalArgumentException();
+                }
+
+                this.position = position;
+                this.angle = angle;
+                this.setPenColor(c);
+
+        }
+
+        public void move(double distance) {
+                double x = position.getX();
+                double y = position.getY();
+                double rad = Math.toRadians(this.angle);
+                double x1 = x + (distance * (Math.cos(rad)));
+                double y1 = y + (distance * (Math.sin(rad)));
+                position = new Point2(x1, y1);
+                StdDraw.line(x, y, x1, y1);
+                StdDraw.setPenColor(penColor);
+        }
+
+        public void turnLeft() {
+                this.angle = angle + 90.0;
+        }
+
+        public void turnRight() {
+                this.angle = angle - 90.0;
+        }
+
+        public void turn(double delta) {
+                this.angle = angle + delta;
+        }
+
+        public Color getPenColor() {
+                return this.penColor;
+        }
+
+        public Point2 getPosition() {
+
+                return this.position;
+        }
+
+        public double getAngle() {
+                return this.angle;
+        }
+
+        /**
+         * Sets the pen color.
+         * 
+         * @param c
+         *            the new pen color
+         * @throws IllegalArgumentException
+         *             if the pen color c is null
+         */
+        public void setPenColor(Color c) {
+                if (c == null) {
+                        throw new IllegalArgumentException();
+                }
+                this.penColor = c;
+
+        }
+
+        /**
+         * Compares this turtle with another object for equality. This turtle can be
+         * equal to only other turtles.
+         * 
+         * <p>
+         * Two turtles are equal if their positions, directions, and pen colors are
+         * all equal; otherwise, the turtles are not equal.
+         * 
+         * @param obj
+         *            An object to compare for equality.
+         * @return True if the position, direction, and pen color of this turtle are
+         *         equal to the position, direction, and pen color of the other
+         *         turtle, and false otherwise.
+         */
+        @Override
+        public boolean equals(Object obj) {
+                if (this == obj) {
+                        return true;
+                }
+                if (obj == null) {
+                        return false;
+                }
+                if (this.getClass() != obj.getClass()) {
+                        return false;
+                }
+                Turtle other = (Turtle) obj;
+                if (Double.doubleToLongBits(angle) != Double.doubleToLongBits(other.angle)) {
+                        return false;
+                } else if (!penColor.equals(other.penColor)) {
+                        return false;
+                } else if (!position.equals(other.position)) {
+                        return false;
+                }
+                return true;
+        }
+
+        /**
+         * Returns a hash code for this turtle.
+         * 
+         * @return a hash code for this turtle
+         */
+        @Override
+        public int hashCode() {
+                final int prime = 31;
+                int result = 1;
+                long temp;
+                temp = Double.doubleToLongBits(angle);
+                result = prime * result + (int) (temp ^ (temp >>> 32));
+                result = prime * result + ((penColor == null) ? 0 : penColor.hashCode());
+                result = prime * result + ((position == null) ? 0 : position.hashCode());
+                return result;
+        }
+
+        /**
+         * Returns a string representation of this turtle. The string representation
+         * is:
+         * 
+         * <ol>
+         * <li>the position of the turtle (as given by <code>Point2.toString</code>
+         * ), followed by
+         * <li>a comma and a space, followed by
+         * <li>the direction, followed by
+         * <li>a space, the string "degrees", a space, and a comma, followed by
+         * <li>the pen color (as given by <code>Color.toString</code>)
+         * </ol>
+         * 
+         * @return a string representation of this turtle
+         */
+        @Override
+        public String toString() {
+                String s = String.format("%s, %f degrees, %s", this.getPosition(), this.getAngle(), this.getPenColor());
+                return s;
+        }
+
+}
